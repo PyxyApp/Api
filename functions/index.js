@@ -1,12 +1,13 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
+const crypto = require('crypto');
 const cors = require('cors');
-const app = express();
+const api = express();
 const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ origin: true }));
+api.use(bodyParser.urlencoded({ extended: false }));
+api.use(cors({ origin: true }));
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -15,11 +16,25 @@ admin.initializeApp({
 const db = admin.firestore();
 
 // create
-app.post('/api/create', (req, res) => {
+api.post('/:data/create', (req, res) => {
     (async () => {
         try {
-            await db.collection('items').doc('/' + req.body.id + '/')
-                .create({item: req.body.item});
+            const id = Math.random();
+                switch(req.params.data){
+                    case "users":
+                        await db.collection(req.params.data).doc('/' + id + '/')
+                        .create({
+                            name: {firstname: req.body.firstname, lastname: req.body.firstname},
+                            email: req.body.email,
+                            login:{id: id, password: crypto.createHash('sha256').update(req.body.password).digest('base64'), username: req.body.username},
+                            nat: req.body.nat,
+                            phone: req.body.phone
+                        });
+                        break;
+                    default:
+                        await db.collection(req.params.data).doc('/' + id + '/')
+                        .create({users: req.body});
+                }
             return res.status(200).send();
         } catch (error) {
             console.log(error);
@@ -28,13 +43,37 @@ app.post('/api/create', (req, res) => {
     })();
 });
 
-// read item
-app.get('/api/read/:item_id', (req, res) => {
+// read one User
+api.get('/:data/:id', (req, res) => {
     (async () => {
         try {
-            const document = db.collection('items').doc(req.params.item_id);
-            let item = await document.get();
-            let response = item.data();
+            const document = db.collection(req.params.data).doc(req.params.id);
+            let data = await document.get();
+            let response = data.data();
+            return res.status(200).send(response);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// read all list for one User
+api.get('/users/:id/list', (req, res) => {
+    (async () => {
+        try {
+            const query = db.collection('users').doc(req.params.id).collection('list');
+            let response = [];
+            await query.get().then(querySnapshot => {
+                let docs = querySnapshot.docs;
+                for (let doc of docs) {
+                    const selectedListByUser = {
+                        item: [
+                            doc.data()]
+                    };
+                    response.push(selectedListByUser);
+                }
+            });
             return res.status(200).send(response);
         } catch (error) {
             console.log(error);
@@ -44,19 +83,19 @@ app.get('/api/read/:item_id', (req, res) => {
 });
 
 // read all
-app.get('/api/read', (req, res) => {
+api.get('/:data', (req, res) => {
     (async () => {
         try {
-            let query = db.collection('items');
+            let query = db.collection(req.params.data);
             let response = [];
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for (let doc of docs) {
-                    const selectedItem = {
-                        id: doc.id,
-                        item: doc.data().item
-                    };
-                    response.push(selectedItem);
+                    const selectedData = {
+                        item: [
+                            doc.data()]
+                };
+                    response.push(selectedData);
                 }
             });
             return res.status(200).send(response);
@@ -68,12 +107,12 @@ app.get('/api/read', (req, res) => {
 });
 
 // update
-app.put('/api/update/:item_id', (req, res) => {
+api.put('/:data/update/:id', (req, res) => {
     (async () => {
         try {
-            const document = db.collection('items').doc(req.params.item_id);
+            const document = db.collection(req.params.data).doc(req.params.id);
             await document.update({
-                item: req.body.item
+                data: req.body.data
             });
             return res.status(200).send();
         } catch (error) {
@@ -84,10 +123,10 @@ app.put('/api/update/:item_id', (req, res) => {
 });
 
 // delete
-app.delete('/api/delete/:item_id', (req, res) => {
+api.delete('/:data/delete/:id', (req, res) => {
     (async () => {
         try {
-            const document = db.collection('items').doc(req.params.item_id);
+            const document = db.collection(req.params.data).doc(req.params.id);
             await document.delete();
             return res.status(200).send();
         } catch (error) {
@@ -97,4 +136,4 @@ app.delete('/api/delete/:item_id', (req, res) => {
     })();
 });
 
-exports.app = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(api);
