@@ -22,7 +22,7 @@ api.post('/:data/create', (req, res) => {
             const id = Math.random();
                 switch(req.params.data){
                     case "users":
-                        await db.collection(req.params.data).doc('/' + id + '/')
+                        await db.collection(req.params.data).doc()
                         .create({
                             name: {firstname: req.body.firstname, lastname: req.body.firstname},
                             email: req.body.email,
@@ -59,10 +59,10 @@ api.get('/:data/:id', (req, res) => {
 });
 
 // read all list for one User
-api.get('/users/:id/list', (req, res) => {
+api.get('/users/:id/lists', (req, res) => {
     (async () => {
         try {
-            const query = db.collection('users').doc(req.params.id).collection('list');
+            const query = db.collection('users').doc(req.params.id).collection('lists');
             let response = [];
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
@@ -72,6 +72,48 @@ api.get('/users/:id/list', (req, res) => {
                             doc.data()]
                     };
                     response.push(selectedListByUser);
+                }
+            });
+            return res.status(200).send(response);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// get All ActivityCard by List
+api.get('/users/:id/lists/:idList/', (req, res) => {
+    (async () => {
+        try {
+            const document = db.collection('users')
+                .doc(req.params.id).collection('lists').doc(req.params.idList);
+            let data = await document.get();
+            let response = data.data();
+            return res.status(200).send(response);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// get ActivityCard by List by User
+api.get('/users/:id/lists/:idList/tasks', (req, res) => {
+    (async () => {
+        try {
+            const query = db.collection('users').doc(req.params.id)
+                .collection('lists').doc(req.params.idList)
+                .collection("tasks");
+            let response = [];
+            await query.get().then(querySnapshot => {
+                let docs = querySnapshot.docs;
+                for (let doc of docs) {
+                    const selectedActivitiesByList = {
+                        item: [
+                            doc.data()]
+                    };
+                    response.push(selectedActivitiesByList);
                 }
             });
             return res.status(200).send(response);
@@ -136,4 +178,6 @@ api.delete('/:data/delete/:id', (req, res) => {
     })();
 });
 
-exports.api = functions.https.onRequest(api);
+const v1 = api;
+
+exports.v1 = functions.https.onRequest(v1);

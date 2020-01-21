@@ -1,0 +1,36 @@
+[debug] [2020-01-21T15:26:54.716Z] ----------------------------------------------------------------------
+[debug] [2020-01-21T15:26:54.718Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve --only functions
+[debug] [2020-01-21T15:26:54.718Z] CLI Version:   7.12.1
+[debug] [2020-01-21T15:26:54.718Z] Platform:      darwin
+[debug] [2020-01-21T15:26:54.718Z] Node Version:  v13.3.0
+[debug] [2020-01-21T15:26:54.719Z] Time:          Tue Jan 21 2020 16:26:54 GMT+0100 (Central European Standard Time)
+[debug] [2020-01-21T15:26:54.719Z] ----------------------------------------------------------------------
+[debug] [2020-01-21T15:26:54.719Z] 
+[debug] [2020-01-21T15:26:54.724Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-01-21T15:26:54.724Z] > authorizing via signed-in user
+[debug] [2020-01-21T15:26:54.725Z] [iam] checking project pyxy-f84e8 for permissions ["firebase.projects.get"]
+[debug] [2020-01-21T15:26:54.725Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-01-21T15:26:54.726Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-01-21T15:26:54.833Z] <<< HTTP RESPONSE 200
+[debug] [2020-01-21T15:26:54.847Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pyxy-f84e8:testIamPermissions  
+
+[debug] [2020-01-21T15:26:55.640Z] <<< HTTP RESPONSE 200
+[debug] [2020-01-21T15:26:55.641Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/pyxy-f84e8  
+ 
+[debug] [2020-01-21T15:26:55.846Z] <<< HTTP RESPONSE 200
+[warn] ⚠  Your requested "node" version "10" doesn't match your global version "13"
+[info] ✔  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/nicolasnotararigo/Projects/Pyxy/functions" for Cloud Functions...
+[debug] [2020-01-21T15:26:56.128Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-01-21T15:26:56.128Z] [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-01-21T15:26:56.128Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-01-21T15:26:56.129Z] [worker-~diagnostic~-7500143e-7125-4f41-b3b8-8c3ef60d2869]: Assigning socketPath: /var/folders/bj/cr4xpmpx45j48gl7l4sc5p900000gn/T/fire_emu_15943.sock
+[debug] [2020-01-21T15:26:56.129Z] [worker-~diagnostic~-7500143e-7125-4f41-b3b8-8c3ef60d2869]: BUSY
+[debug] [2020-01-21T15:26:56.341Z] [runtime-status] [15943] Functions runtime initialized. {"cwd":"/Users/nicolasnotararigo/Projects/Pyxy/functions","node_version":"13.3.0"}
+[debug] [2020-01-21T15:26:56.342Z] [runtime-status] [15943] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-01-21T15:26:56.343Z] [runtime-status] [15943] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.9.1","resolution":"/Users/nicolasnotararigo/Projects/Pyxy/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2020-01-21T15:26:56.344Z] [runtime-status] [15943] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"/Users/nicolasnotararigo/Projects/Pyxy/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2020-01-21T15:26:56.345Z] [runtime-status] [15943] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"/Users/nicolasnotararigo/Projects/Pyxy/functions/node_modules/firebase-functions/lib/index.js"}
+[info] ✔  functions[v1]: http function initialized (http://localhost:5000/pyxy-f84e8/us-central1/v1).
+[debug] [2020-01-21T15:26:56.602Z] [worker-~diagnostic~-7500143e-7125-4f41-b3b8-8c3ef60d2869]: IDLE
