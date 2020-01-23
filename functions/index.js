@@ -3,11 +3,11 @@ const admin = require('firebase-admin');
 const express = require('express');
 const crypto = require('crypto');
 const cors = require('cors');
-const api = express();
+const app = express();
 const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
-api.use(bodyParser.urlencoded({ extended: false }));
-api.use(cors({ origin: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors({ origin: true }));
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -15,8 +15,12 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+app.get('/^(\\d+)$', function(req, res) {
+    res.send('hello world');
+});
+
 // create
-api.post('/:data/create', (req, res) => {
+app.post('/:data/create', (req, res) => {
     (async () => {
         try {
             const id = Math.random();
@@ -44,7 +48,7 @@ api.post('/:data/create', (req, res) => {
 });
 
 // read one User
-api.get('/:data/:id', (req, res) => {
+app.get('/:data/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
@@ -59,7 +63,7 @@ api.get('/:data/:id', (req, res) => {
 });
 
 // read all list for one User
-api.get('/users/:id/lists', (req, res) => {
+app.get('/users/:id/lists', (req, res) => {
     (async () => {
         try {
             const query = db.collection('users').doc(req.params.id).collection('lists');
@@ -83,7 +87,7 @@ api.get('/users/:id/lists', (req, res) => {
 });
 
 // get All ActivityCard by List
-api.get('/users/:id/lists/:idList/', (req, res) => {
+app.get('/users/:id/lists/:idList/', (req, res) => {
     (async () => {
         try {
             const document = db.collection('users')
@@ -99,7 +103,7 @@ api.get('/users/:id/lists/:idList/', (req, res) => {
 });
 
 // get ActivityCard by List by User
-api.get('/users/:id/lists/:idList/tasks', (req, res) => {
+app.get('/users/:id/lists/:idList/tasks', (req, res) => {
     (async () => {
         try {
             const query = db.collection('users').doc(req.params.id)
@@ -125,7 +129,7 @@ api.get('/users/:id/lists/:idList/tasks', (req, res) => {
 });
 
 // read all
-api.get('/:data', (req, res) => {
+app.get('/:data', (req, res) => {
     (async () => {
         try {
             let query = db.collection(req.params.data);
@@ -149,7 +153,7 @@ api.get('/:data', (req, res) => {
 });
 
 // update
-api.put('/:data/update/:id', (req, res) => {
+app.put('/:data/update/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
@@ -165,7 +169,7 @@ api.put('/:data/update/:id', (req, res) => {
 });
 
 // delete
-api.delete('/:data/delete/:id', (req, res) => {
+app.delete('/:data/delete/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
@@ -178,6 +182,6 @@ api.delete('/:data/delete/:id', (req, res) => {
     })();
 });
 
-const v1 = api;
+const v1 = app;
 
 exports.v1 = functions.https.onRequest(v1);
