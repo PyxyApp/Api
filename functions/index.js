@@ -178,6 +178,4 @@ api.delete('/:data/delete/:id', (req, res) => {
     })();
 });
 
-const v1 = api;
-
-exports.v1 = functions.https.onRequest(v1);
+exports.api = functions.https.onRequest(api);
