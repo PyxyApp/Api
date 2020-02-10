@@ -191,8 +191,5 @@ app.delete('/:data/delete/:id', (req, res) => {
     })();
 });
 
-
-
 const api = app;
-
 exports.api = functions.https.onRequest(api);
