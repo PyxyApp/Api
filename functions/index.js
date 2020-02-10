@@ -142,8 +142,7 @@ app.get('/:data', (req, res) => {
                 let docs = querySnapshot.docs;
                 for (let doc of docs) {
                     const selectedData = {
-                        item: [
-                            doc.data()]
+                        item: doc.data()
                 };
                     response.push(selectedData);
                 }
@@ -162,9 +161,15 @@ app.put('/:data/update/:id', (req, res) => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
             await document.update({
-                data: req.body.data
+                email: req.body.email,
+                name: {
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname
+                },
+                nat: req.body.nat,
+                phone: req.body.phone
             });
-            return res.status(200).send();
+            return res.status(200).send('The data was updated with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
@@ -178,7 +183,7 @@ app.delete('/:data/delete/:id', (req, res) => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
             await document.delete();
-            return res.status(200).send();
+            return res.status(200).send('The data was deleted with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
@@ -188,6 +193,6 @@ app.delete('/:data/delete/:id', (req, res) => {
 
 
 
-const v1 = app;
+const api = app;
 
-exports.v1 = functions.https.onRequest(v1);
+exports.api = functions.https.onRequest(api);
