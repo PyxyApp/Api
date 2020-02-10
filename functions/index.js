@@ -15,6 +15,10 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+app.get('/', function(req, res) {
+    res.send('hello world');
+});
+
 app.get('/^(\\d+)$', function(req, res) {
     res.send('hello world');
 });
@@ -146,7 +150,7 @@ app.get('/:data', (req, res) => {
             });
             return res.status(200).send(response);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(500).send(error);
         }
     })();
@@ -181,6 +185,8 @@ app.delete('/:data/delete/:id', (req, res) => {
         }
     })();
 });
+
+
 
 const v1 = app;
 
