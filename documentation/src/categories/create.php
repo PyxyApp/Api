@@ -3,15 +3,15 @@
         <div class="card-header" id="headingOne">
             <h2 class="mb-0">
                 <button class="btn btn-dark" type="button" data-toggle="collapse"
-                        data-target="#collapseUpdateUsers" aria-expanded="true" aria-controls="collapseUpdateUsers">
+                        data-target="#collapseCreateCategories" aria-expanded="true" aria-controls="collapseCreateCategories">
                     Show / Hide
                 </button>
                 <button type="button" class="btn btn-warning disabled">Create</button>
-                users/create/
+                /categories/create/
             </h2>
         </div>
 
-        <div id="collapseUpdateUsers" class="collapse collapsed" aria-labelledby="headingOne"
+        <div id="collapseCreateCategories" class="collapse collapsed" aria-labelledby="headingOne"
              data-parent="#accordionCreate">
             <div class="card-body">
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
