@@ -3,15 +3,15 @@
         <div class="card-header" id="headingOne">
             <h2 class="mb-0">
                 <button class="btn btn-dark" type="button" data-toggle="collapse"
-                        data-target="#collapseUpdateUsers" aria-expanded="true" aria-controls="collapseUpdateUsers">
+                        data-target="#collapseDeleteActivities" aria-expanded="true" aria-controls="collapseDeleteActivities">
                     Show / Hide
                 </button>
                 <button type="button" class="btn btn-danger disabled">Delete</button>
-                users/delete/{userId}/
+                /activities/delete/{userId}/
             </h2>
         </div>
 
-        <div id="collapseUpdateUsers" class="collapse collapsed" aria-labelledby="headingOne"
+        <div id="collapseDeleteActivities" class="collapse collapsed" aria-labelledby="headingOne"
              data-parent="#accordionDelete">
             <div class="card-body">
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
