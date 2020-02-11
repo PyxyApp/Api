@@ -30,7 +30,7 @@ app.post('/:data/create', (req, res) => {
             const id = Math.random();
                 switch(req.params.data){
                     case "users":
-                        await db.collection(req.params.data).doc()
+                        await db.collection('users').doc()
                         .create({
                             name: {firstname: req.body.firstname, lastname: req.body.firstname},
                             email: req.body.email,
@@ -38,6 +38,20 @@ app.post('/:data/create', (req, res) => {
                             nat: req.body.nat,
                             phone: req.body.phone
                         });
+                        break;
+                    case "activities":
+                        await db.collection('activities').doc()
+                        .create({
+                            content: req.body.content,
+                            list: req.body.list,
+                            userId: req.body.userId
+                        });
+                        break;
+                    case "categories":
+                        await db.collection('categories').doc()
+                            .create({
+                                title: req.body.title
+                            });
                         break;
                     default:
                         await db.collection(req.params.data).doc('/' + id + '/')
@@ -51,7 +65,7 @@ app.post('/:data/create', (req, res) => {
     })();
 });
 
-// read one User
+// read one User or one categories / activities
 app.get('/:data/:id', (req, res) => {
     (async () => {
         try {
@@ -132,7 +146,7 @@ app.get('/users/:id/lists/:idList/tasks', (req, res) => {
     })();
 });
 
-// read all
+// read all in one data
 app.get('/:data', (req, res) => {
     (async () => {
         try {
