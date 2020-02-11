@@ -27,16 +27,16 @@
         <div class="col-8">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="list-get-users" role="tabpanel" aria-labelledby="list-get-users">
-                    <?php require('./src/users/get.php'); ?>
+                    <?php require('./src/templates/users/get.php'); ?>
                     <br>
-                    <?php require('./src/users/create.php'); ?>
+                    <?php require('./src/templates/users/create.php'); ?>
                     <br>
-                    <?php require('./src/users/put.php'); ?>
+                    <?php require('./src/templates/users/put.php'); ?>
                     <br>
-                    <?php require('./src/users/delete.php'); ?>
+                    <?php require('./src/templates/users/delete.php'); ?>
                 </div>
                 <div class="tab-pane fade" id="list-get-lists" role="tabpanel" aria-labelledby="list-get-lists">
-                    <?php require('./src/users/lists/get.php'); ?>
+                    <?php require('./src/templates/users/lists/get.php'); ?>
                     <br>
 <!--                    --><?php //require('./src/users/lists/create.php'); ?>
                     <br>
@@ -45,7 +45,7 @@
 <!--                    --><?php //require('./src/users/lists/delete.php'); ?>
                 </div>
                 <div class="tab-pane fade" id="list-get-tasks" role="tabpanel" aria-labelledby="list-get-tasks">
-                    <?php require('./src/users/lists/tasks/get.php'); ?>
+                    <?php require('./src/templates/users/lists/tasks/get.php'); ?>
                     <br>
 <!--                    --><?php //require('./src/users/lists/tasks/create.php'); ?>
                     <br>
@@ -54,18 +54,18 @@
 <!--                    --><?php //require('./src/users/lists/tasks/delete.php'); ?>
                 </div>
                 <div class="tab-pane fade" id="list-activities" role="tabpanel" aria-labelledby="list-activities">
-                    <?php require('./src/activities/get.php'); ?>
+                    <?php require('./src/templates/activities/get.php'); ?>
                     <br>
-                    <?php require('./src/activities/create.php'); ?>
+                    <?php require('./src/templates/activities/create.php'); ?>
                     <br>
-                    <?php require('./src/activities/delete.php'); ?>
+                    <?php require('./src/templates/activities/delete.php'); ?>
                 </div>
                 <div class="tab-pane fade" id="list-categories" role="tabpanel" aria-labelledby="list-categories">
-                    <?php require('./src/categories/get.php'); ?>
+                    <?php require('./src/templates/categories/get.php'); ?>
                     <br>
-                    <?php require('./src/categories/create.php'); ?>
+                    <?php require('./src/templates/categories/create.php'); ?>
                     <br>
-                    <?php require('./src/categories/delete.php'); ?>
+                    <?php require('./src/templates/categories/delete.php'); ?>
                 </div>
             </div>
         </div>

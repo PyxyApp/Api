@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
 const crypto = require('crypto');
+const uuid = require('uuid');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
@@ -23,15 +24,30 @@ app.get('/^(\\d+)$', function(req, res) {
     res.send('hello world');
 });
 
+app.post('/users/:id/list/create', (req, res) => {
+    (async () => {
+        try {
+            await db.collection('users').doc(req.params.id).collection('lists').doc(id)
+                .set({
+                    id: id,
+                });
+            return res.status(200).send('Success!');
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
 // create
 app.post('/:data/create', (req, res) => {
     (async () => {
         try {
-            const id = Math.random();
+            const id = uuid.v1();
                 switch(req.params.data){
                     case "users":
-                        await db.collection('users').doc()
-                        .create({
+                        await db.collection('users').doc(id)
+                        .set({
                             name: {firstname: req.body.firstname, lastname: req.body.firstname},
                             email: req.body.email,
                             login:{id: id, password: crypto.createHash('sha256').update(req.body.password).digest('base64'), username: req.body.username},
@@ -40,16 +56,18 @@ app.post('/:data/create', (req, res) => {
                         });
                         break;
                     case "activities":
-                        await db.collection('activities').doc()
-                        .create({
-                            content: req.body.content,
-                            list: req.body.list,
-                            userId: req.body.userId
-                        });
+                        await db.collection('activities').doc(id)
+                            .set({
+                                id: id,
+                                content: req.body.content,
+                                list: req.body.list,
+                                userId: req.body.userId
+                            });
                         break;
                     case "categories":
-                        await db.collection('categories').doc()
-                            .create({
+                        await db.collection('categories').doc(id)
+                            .set({
+                                id: id,
                                 title: req.body.title
                             });
                         break;
@@ -57,7 +75,7 @@ app.post('/:data/create', (req, res) => {
                         await db.collection(req.params.data).doc('/' + id + '/')
                         .create({users: req.body});
                 }
-            return res.status(200).send();
+            return res.status(200).send('Success!');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
