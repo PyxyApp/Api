@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: true }));
+const id = uuid.v1();
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -24,12 +25,21 @@ app.get('/^(\\d+)$', function(req, res) {
     res.send('hello world');
 });
 
-app.post('/users/:id/list/create', (req, res) => {
+// CREATE list
+app.post('/users/:id/lists/create', (req, res) => {
     (async () => {
         try {
             await db.collection('users').doc(req.params.id).collection('lists').doc(id)
                 .set({
                     id: id,
+                    title: req.body.title,
+                    private: req.body.private,
+                    isActived: true,
+                    date: {
+                        date_created: Date.now(),
+                        date_limit: req.body.date_limit
+                    },
+                    description: req.body.description
                 });
             return res.status(200).send('Success!');
         } catch (error) {
@@ -43,7 +53,6 @@ app.post('/users/:id/list/create', (req, res) => {
 app.post('/:data/create', (req, res) => {
     (async () => {
         try {
-            const id = uuid.v1();
                 switch(req.params.data){
                     case "users":
                         await db.collection('users').doc(id)
@@ -209,13 +218,28 @@ app.put('/:data/update/:id', (req, res) => {
     })();
 });
 
-// delete
+// DELETE
 app.delete('/:data/delete/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
             await document.delete();
             return res.status(200).send('The data was deleted with success !');
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// DELETE list
+app.delete('/users/:id/lists/delete/:idList', (req, res) => {
+    (async () => {
+        try {
+            const document = db.collection('users').doc(req.params.id)
+                .collection('lists').doc(req.params.idList);
+            await document.delete();
+            return res.status(200).send('The List was deleted with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);

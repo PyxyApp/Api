@@ -9,6 +9,7 @@
 <body>
 
 <div class="container mt-4">
+    <h1>Pyxy API - Documentation</h1>
     <div class="row">
         <div class="col-4">
             <div class="list-group" id="list-tab" role="tablist">

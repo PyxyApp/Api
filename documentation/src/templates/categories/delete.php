@@ -14,14 +14,17 @@
         <div id="collapseDeleteCategories" class="collapse collapsed" aria-labelledby="headingOne"
              data-parent="#accordionDelete">
             <div class="card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor
-                brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
-                aliqua Delete a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente
-                ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer
-                farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them
-                accusamus labore sustainable VHS.
+                <h3>Implementation Notes</h3>
+                <p>
+                    To delete a specific Category
+                </p>
+                <h3>
+                    Response Class (Status 200)
+                </h3>
+                <p>Successful response</p>
+                <code>
+                    The data was deleted with success !
+                </code>
             </div>
         </div>
     </div>
