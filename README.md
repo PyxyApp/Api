@@ -7,4 +7,4 @@ https://us-central1-pyxy-f84e8.cloudfunctions.net/api/
 
 ## Documentation
 
-https://doc.pyxy.space/
+https://app.swaggerhub.com/apis-docs/Neerfix/Pyxy-Api/
