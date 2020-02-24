@@ -26,11 +26,11 @@ admin.initializeApp({
 const db = admin.firestore();
 
 app.get('/', function(req, res) {
-    res.send('hello world');
+    res.send('API version 1.1.0');
 });
 
 app.get('/^(\\d+)$', function(req, res) {
-    res.send('hello world');
+    res.send('API version 1.1.0');
 });
 
 // CREATE USER / ACTIVITY / CATEGORY
