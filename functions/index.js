@@ -124,7 +124,7 @@ app.get('/:data', (req, res) => {
                 });
                 return res.status(200).send(response);
             }else{
-                return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist', req.params.data));
+                return res.status(404).send(errorMessage('Invalid Data', 'The data does not exist.', '', req.params.data));
             }
         } catch (error) {
             return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist'));
