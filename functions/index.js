@@ -9,7 +9,15 @@ const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: true }));
-const id = uuid.v1();
+
+errorMessage = (reason, message, type, detail) => {
+    return {
+        "reason": reason,
+        "message": message,
+        "type": type,
+        "detail": detail
+    }
+};
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -25,37 +33,14 @@ app.get('/^(\\d+)$', function(req, res) {
     res.send('hello world');
 });
 
-// CREATE list
-app.post('/users/:id/lists/create', (req, res) => {
+// CREATE USER / ACTIVITY / CATEGORY
+app.post('/:data', (req, res) => {
+    const id = uuid.v1();
     (async () => {
         try {
-            await db.collection('users').doc(req.params.id).collection('lists').doc(id)
-                .set({
-                    id: id,
-                    title: req.body.title,
-                    private: req.body.private,
-                    isActived: true,
-                    date: {
-                        date_created: Date.now(),
-                        date_limit: req.body.date_limit
-                    },
-                    description: req.body.description
-                });
-            return res.status(200).send('Success!');
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// create
-app.post('/:data/create', (req, res) => {
-    (async () => {
-        try {
-                switch(req.params.data){
-                    case "users":
-                        await db.collection('users').doc(id)
+            switch(req.params.data){
+                case "users":
+                    await db.collection('users').doc(id)
                         .set({
                             name: {firstname: req.body.firstname, lastname: req.body.firstname},
                             email: req.body.email,
@@ -63,28 +48,33 @@ app.post('/:data/create', (req, res) => {
                             nat: req.body.nat,
                             phone: req.body.phone
                         });
-                        break;
-                    case "activities":
-                        await db.collection('activities').doc(id)
-                            .set({
-                                id: id,
-                                content: req.body.content,
-                                list: req.body.list,
-                                userId: req.body.userId
-                            });
-                        break;
-                    case "categories":
-                        await db.collection('categories').doc(id)
-                            .set({
-                                id: id,
-                                title: req.body.title
-                            });
-                        break;
-                    default:
-                        await db.collection(req.params.data).doc('/' + id + '/')
+                    break;
+                case "activities":
+                    await db.collection('activities').doc(id)
+                        .set({
+                            id: id,
+                            content: req.body.content,
+                            list: req.body.list,
+                            userId: req.body.userId,
+                            isActivated: true,
+                            date: {
+                                dateCreated: Date.now(),
+                                dateDisabled: 'activated'
+                            }
+                        });
+                    break;
+                case "categories":
+                    await db.collection('categories').doc(id)
+                        .set({
+                            id: id,
+                            title: req.body.title
+                        });
+                    break;
+                default:
+                    await db.collection(req.params.data).doc('/' + id + '/')
                         .create({users: req.body});
-                }
-            return res.status(200).send('Success!');
+            }
+            return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
@@ -92,7 +82,33 @@ app.post('/:data/create', (req, res) => {
     })();
 });
 
-// read one User or one categories / activities
+// CREATE LIST
+app.post('/users/:id/lists/', (req, res) => {
+    const id = uuid.v1();
+    (async () => {
+        try {
+            await db.collection('users').doc(req.params.id).collection('lists').doc(id)
+                .set({
+                    id: id,
+                    title: req.body.title,
+                    private: req.body.private,
+                    isActivated: true,
+                    date: {
+                        dateCreated: Date.now(),
+                        dateLimit: req.body.dateLimit,
+                        dateDisabled: 'activated'
+                    },
+                    description: req.body.description
+                });
+            return res.status(200).send('The "'+req.body.title+'" list has been successfully created with id '+id+'!');
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// READ ONE USER / CATEGORY / ACTIVITY
 app.get('/:data/:id', (req, res) => {
     (async () => {
         try {
@@ -107,7 +123,7 @@ app.get('/:data/:id', (req, res) => {
     })();
 });
 
-// read all list for one User
+// READ ALL LIST FOR ONE USER
 app.get('/users/:id/lists', (req, res) => {
     (async () => {
         try {
@@ -116,10 +132,7 @@ app.get('/users/:id/lists', (req, res) => {
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for (let doc of docs) {
-                    const selectedListByUser = {
-                        item: [
-                            doc.data()]
-                    };
+                    const selectedListByUser = doc.data();
                     response.push(selectedListByUser);
                 }
             });
@@ -158,10 +171,7 @@ app.get('/users/:id/lists/:idList/tasks', (req, res) => {
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for (let doc of docs) {
-                    const selectedActivitiesByList = {
-                        item: [
-                            doc.data()]
-                    };
+                    const selectedActivitiesByList = doc.data();
                     response.push(selectedActivitiesByList);
                 }
             });
@@ -173,7 +183,7 @@ app.get('/users/:id/lists/:idList/tasks', (req, res) => {
     })();
 });
 
-// read all in one data
+// READ ALL DATA OF USER / CATEGORY / ACTIVITY
 app.get('/:data', (req, res) => {
     (async () => {
         try {
@@ -182,22 +192,19 @@ app.get('/:data', (req, res) => {
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for (let doc of docs) {
-                    const selectedData = {
-                        item: doc.data()
-                };
+                    const selectedData = doc.data();
                     response.push(selectedData);
                 }
             });
             return res.status(200).send(response);
         } catch (error) {
-            console.error(error);
-            return res.status(500).send(error);
+            return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist'));
         }
     })();
 });
 
-// update
-app.put('/:data/update/:id', (req, res) => {
+// UPDATE USER / CATEGORY / ACTIVITY
+app.put('/:data/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
@@ -210,7 +217,7 @@ app.put('/:data/update/:id', (req, res) => {
                 nat: req.body.nat,
                 phone: req.body.phone
             });
-            return res.status(200).send('The data was updated with success !');
+            return res.status(200).send('The '+req.params.data+' was updated with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
@@ -218,13 +225,13 @@ app.put('/:data/update/:id', (req, res) => {
     })();
 });
 
-// DELETE
-app.delete('/:data/delete/:id', (req, res) => {
+// DELETE USER / ACTIVITY / CATEGORY
+app.delete('/:data/:id', (req, res) => {
     (async () => {
         try {
             const document = db.collection(req.params.data).doc(req.params.id);
             await document.delete();
-            return res.status(200).send('The data was deleted with success !');
+            return res.status(200).send('The '+req.params.data+' was deleted with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(error);
@@ -232,8 +239,8 @@ app.delete('/:data/delete/:id', (req, res) => {
     })();
 });
 
-// DELETE list
-app.delete('/users/:id/lists/delete/:idList', (req, res) => {
+// DELETE LIST
+app.delete('/users/:id/lists/:idList', (req, res) => {
     (async () => {
         try {
             const document = db.collection('users').doc(req.params.id)
