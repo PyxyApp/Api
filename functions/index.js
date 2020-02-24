@@ -139,7 +139,11 @@ app.get('/:data/:id', (req, res) => {
             const document = db.collection(req.params.data).doc(req.params.id);
             let data = await document.get();
             let response = data.data();
-            return res.status(200).send(response);
+            if(response === undefined){
+                return res.status(404).send(errorMessage('Resource was not found', 'The data at the specified id does not exist.'));
+            }else{
+                return res.status(200).send(response);
+            }
         } catch (error) {
             console.log(error);
             return res.status(500).send(errorMessage('', error));
