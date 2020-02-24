@@ -77,7 +77,7 @@ app.post('/:data', (req, res) => {
             return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(404).send(errorMessage('Resource was not found.', error));
         }
     })();
 });
@@ -103,7 +103,31 @@ app.post('/users/:id/lists/', (req, res) => {
             return res.status(200).send('The "'+req.body.title+'" list has been successfully created with id '+id+'!');
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
+        }
+    })();
+});
+
+// READ ALL DATA OF USER / CATEGORY / ACTIVITY
+app.get('/:data', (req, res) => {
+    (async () => {
+        try {
+            if(req.params.data === 'users' || req.params.data === 'activities' || req.params.data === 'categories'){
+                let query = db.collection(req.params.data);
+                let response = [];
+                await query.get().then(querySnapshot => {
+                    let docs = querySnapshot.docs;
+                    for (let doc of docs) {
+                        const selectedData = doc.data();
+                        response.push(selectedData);
+                    }
+                });
+                return res.status(200).send(response);
+            }else{
+                return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist', req.params.data));
+            }
+        } catch (error) {
+            return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist'));
         }
     })();
 });
@@ -118,7 +142,7 @@ app.get('/:data/:id', (req, res) => {
             return res.status(200).send(response);
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -139,7 +163,7 @@ app.get('/users/:id/lists', (req, res) => {
             return res.status(200).send(response);
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -155,7 +179,7 @@ app.get('/users/:id/lists/:idList/', (req, res) => {
             return res.status(200).send(response);
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -178,27 +202,7 @@ app.get('/users/:id/lists/:idList/tasks', (req, res) => {
             return res.status(200).send(response);
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// READ ALL DATA OF USER / CATEGORY / ACTIVITY
-app.get('/:data', (req, res) => {
-    (async () => {
-        try {
-            let query = db.collection(req.params.data);
-            let response = [];
-            await query.get().then(querySnapshot => {
-                let docs = querySnapshot.docs;
-                for (let doc of docs) {
-                    const selectedData = doc.data();
-                    response.push(selectedData);
-                }
-            });
-            return res.status(200).send(response);
-        } catch (error) {
-            return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist'));
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -220,7 +224,7 @@ app.put('/:data/:id', (req, res) => {
             return res.status(200).send('The '+req.params.data+' was updated with success !');
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -234,7 +238,7 @@ app.delete('/:data/:id', (req, res) => {
             return res.status(200).send('The '+req.params.data+' was deleted with success !');
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
@@ -249,7 +253,7 @@ app.delete('/users/:id/lists/:idList', (req, res) => {
             return res.status(200).send('The List was deleted with success !');
         } catch (error) {
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send(errorMessage('', error));
         }
     })();
 });
