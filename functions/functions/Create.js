@@ -77,10 +77,10 @@ module.exports = {
         const id = uuid.v1();
         (async () => {
             try {
+                req.body.id = id;
                 await db.collection('users').doc(req.params.id)
                     .collection('lists').doc(req.params.idList)
-                    .collection('tasks').doc(id);
-                    req.body.id = id
+                    .collection('tasks').doc(id)
                     .set(req.body);
                 return res.status(200).send('The "'+req.body.title+'" task has been successfully created with id '+id+'!');
             } catch (error) {

@@ -13,12 +13,12 @@ module.exports = {
         })();
     },
 
-    // DELETE TASK
-    deleteLists: (req, res, db, errorMessage) => {
+    deleteLists: (req, res, db, errorMessage, Delete) => {
         (async () => {
             try {
                 const document = db.collection('users').doc(req.params.id)
                     .collection('lists').doc(req.params.idList);
+                // Check if tasks
                 const query = document.collection("tasks");
                 let response = [];
                 await query.get().then(querySnapshot => {
@@ -29,10 +29,13 @@ module.exports = {
                     }
                 });
                 if(response.length > 0){
-                    console.log(response)
+                    for(let i=0; i< response.length; i++){
+                        req.params.idTask = response[i].id;
+                        Delete.deleteTask(req, res, db, errorMessage)
+                    }
                 }
-                // await document.delete();
-                return res.status(200).send('The List was deleted with success !');
+                await document.delete();
+                return res.status(200).send('The List was deleted with success and the tasks was also deleted !');
             } catch (error) {
                 console.log(error);
                 return res.status(500).send(errorMessage('', error));
@@ -40,7 +43,6 @@ module.exports = {
         })();
     },
 
-    // DELETE TASK
     deleteTask: (req, res, db, errorMessage) => {
         (async () => {
             try {

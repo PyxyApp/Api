@@ -10,11 +10,11 @@ module.exports = {
     crud: (app, db, errorMessage) => {
 
         app.get('/', function(req, res) {
-            res.send('API version 1.1.0');
+            res.send('API version 1.2.0');
         });
 
         app.get('/^(\\d+)$', function(req, res) {
-            res.send('API version 1.1.0');
+            res.send('API version 1.2.0');
         });
 
 // CREATE USER / ACTIVITY / CATEGORY
@@ -74,7 +74,7 @@ module.exports = {
 
 // DELETE LIST
         app.delete('/users/:id/lists/:idList', (req, res) => {
-            Delete.deleteLists(req, res, db, errorMessage)
+            Delete.deleteLists(req, res, db, errorMessage, Delete)
         });
 
         app.delete('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
