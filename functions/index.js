@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
+const Delete = require("./functions/Delete");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: true }));
 
@@ -104,6 +105,23 @@ app.post('/users/:id/lists/', (req, res) => {
         } catch (error) {
             console.log(error);
             return res.status(500).send(errorMessage('', error));
+        }
+    })();
+});
+
+// CREATE TASK
+app.post('/users/:id/lists/:idList/tasks', (req, res) => {
+    const id = uuid.v1();
+    (async () => {
+        try {
+            await db.collection('users').doc(req.params.id)
+                .collection('lists').doc(req.params.idList)
+                .collection('tasks').doc(id)
+                .set(req.body);
+            return res.status(200).send('The "'+req.body.title+'" task has been successfully created with id '+id+'!');
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send(errorMessage('invalid data', error));
         }
     })();
 });
@@ -211,6 +229,23 @@ app.get('/users/:id/lists/:idList/tasks', (req, res) => {
     })();
 });
 
+// get Task by idList by User
+app.get('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
+    (async () => {
+        try {
+            const query = db.collection('users').doc(req.params.id)
+                .collection('lists').doc(req.params.idList)
+                .collection('tasks').doc(req.params.idTask);
+            let data = await query.get();
+            let response = data.data();
+            return res.status(200).send(response);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(errorMessage('', error));
+        }
+    })();
+});
+
 // UPDATE USER / CATEGORY / ACTIVITY
 app.put('/:data/:id', (req, res) => {
     (async () => {
@@ -235,16 +270,7 @@ app.put('/:data/:id', (req, res) => {
 
 // DELETE USER / ACTIVITY / CATEGORY
 app.delete('/:data/:id', (req, res) => {
-    (async () => {
-        try {
-            const document = db.collection(req.params.data).doc(req.params.id);
-            await document.delete();
-            return res.status(200).send('The '+req.params.data+' was deleted with success !');
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Delete.deleteData(req, res, db, errorMessage)
 });
 
 // DELETE LIST
@@ -253,13 +279,29 @@ app.delete('/users/:id/lists/:idList', (req, res) => {
         try {
             const document = db.collection('users').doc(req.params.id)
                 .collection('lists').doc(req.params.idList);
-            await document.delete();
+            const query = document.collection("tasks");
+            let response = [];
+            await query.get().then(querySnapshot => {
+                let docs = querySnapshot.docs;
+                for (let doc of docs) {
+                    const selectedActivitiesByList = doc.data();
+                    response.push(selectedActivitiesByList);
+                }
+            });
+            if(response.length > 0){
+                console.log(response)
+            }
+            // await document.delete();
             return res.status(200).send('The List was deleted with success !');
         } catch (error) {
             console.log(error);
             return res.status(500).send(errorMessage('', error));
         }
     })();
+});
+
+app.delete('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
+    Delete.deleteTask(req, res, db, errorMessage);
 });
 
 const api = app;
