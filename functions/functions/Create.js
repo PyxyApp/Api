@@ -79,7 +79,8 @@ module.exports = {
             try {
                 await db.collection('users').doc(req.params.id)
                     .collection('lists').doc(req.params.idList)
-                    .collection('tasks').doc(id)
+                    .collection('tasks').doc(id);
+                    req.body.id = id
                     .set(req.body);
                 return res.status(200).send('The "'+req.body.title+'" task has been successfully created with id '+id+'!');
             } catch (error) {
