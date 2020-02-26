@@ -7,6 +7,9 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const serviceAccount = require("./serviceAccountKey.json");
+const Create = require("./functions/Create");
+const Read = require("./functions/Read");
+const Update = require("./functions/Update");
 const Delete = require("./functions/Delete");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: true }));
@@ -36,236 +39,52 @@ app.get('/^(\\d+)$', function(req, res) {
 
 // CREATE USER / ACTIVITY / CATEGORY
 app.post('/:data', (req, res) => {
-    const id = uuid.v1();
-    (async () => {
-        try {
-            switch(req.params.data){
-                case "users":
-                    await db.collection('users').doc(id)
-                        .set({
-                            name: {firstname: req.body.firstname, lastname: req.body.firstname},
-                            email: req.body.email,
-                            login:{id: id, password: crypto.createHash('sha256').update(req.body.password).digest('base64'), username: req.body.username},
-                            nat: req.body.nat,
-                            phone: req.body.phone
-                        });
-                    break;
-                case "activities":
-                    await db.collection('activities').doc(id)
-                        .set({
-                            id: id,
-                            content: req.body.content,
-                            list: req.body.list,
-                            userId: req.body.userId,
-                            isActivated: true,
-                            date: {
-                                dateCreated: Date.now(),
-                                dateDisabled: 'activated'
-                            }
-                        });
-                    break;
-                case "categories":
-                    await db.collection('categories').doc(id)
-                        .set({
-                            id: id,
-                            title: req.body.title
-                        });
-                    break;
-                default:
-                    await db.collection(req.params.data).doc('/' + id + '/')
-                        .create({users: req.body});
-            }
-            return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
-        } catch (error) {
-            console.log(error);
-            return res.status(404).send(errorMessage('Resource was not found.', error));
-        }
-    })();
+    Create.createData(req, res, db, uuid, errorMessage, crypto);
 });
 
 // CREATE LIST
 app.post('/users/:id/lists/', (req, res) => {
-    const id = uuid.v1();
-    (async () => {
-        try {
-            await db.collection('users').doc(req.params.id).collection('lists').doc(id)
-                .set({
-                    id: id,
-                    title: req.body.title,
-                    private: req.body.private,
-                    isActivated: true,
-                    date: {
-                        dateCreated: Date.now(),
-                        dateLimit: req.body.dateLimit,
-                        dateDisabled: 'activated'
-                    },
-                    description: req.body.description
-                });
-            return res.status(200).send('The "'+req.body.title+'" list has been successfully created with id '+id+'!');
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Create.createList(req, res, db, uuid, errorMessage)
 });
 
 // CREATE TASK
 app.post('/users/:id/lists/:idList/tasks', (req, res) => {
-    const id = uuid.v1();
-    (async () => {
-        try {
-            await db.collection('users').doc(req.params.id)
-                .collection('lists').doc(req.params.idList)
-                .collection('tasks').doc(id)
-                .set(req.body);
-            return res.status(200).send('The "'+req.body.title+'" task has been successfully created with id '+id+'!');
-        } catch (error) {
-            console.log(error);
-            return res.status(400).send(errorMessage('invalid data', error));
-        }
-    })();
+    Create.createTask(req, res, db, uuid, errorMessage)
 });
 
 // READ ALL DATA OF USER / CATEGORY / ACTIVITY
 app.get('/:data', (req, res) => {
-    (async () => {
-        try {
-            if(req.params.data === 'users' || req.params.data === 'activities' || req.params.data === 'categories'){
-                let query = db.collection(req.params.data);
-                let response = [];
-                await query.get().then(querySnapshot => {
-                    let docs = querySnapshot.docs;
-                    for (let doc of docs) {
-                        const selectedData = doc.data();
-                        response.push(selectedData);
-                    }
-                });
-                return res.status(200).send(response);
-            }else{
-                return res.status(404).send(errorMessage('Invalid Data', 'The data does not exist.', '', req.params.data));
-            }
-        } catch (error) {
-            return res.status(400).send(errorMessage('BadRequest', 'At least one filtering parameter must exist'));
-        }
-    })();
+    Read.readData(req, res, db, errorMessage)
 });
 
 // READ ONE USER / CATEGORY / ACTIVITY
 app.get('/:data/:id', (req, res) => {
-    (async () => {
-        try {
-            const document = db.collection(req.params.data).doc(req.params.id);
-            let data = await document.get();
-            let response = data.data();
-            if(response === undefined){
-                return res.status(404).send(errorMessage('Resource was not found', 'The data at the specified id does not exist.'));
-            }else{
-                return res.status(200).send(response);
-            }
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Read.readOneData(req, res, db, errorMessage)
 });
 
 // READ ALL LIST FOR ONE USER
 app.get('/users/:id/lists', (req, res) => {
-    (async () => {
-        try {
-            const query = db.collection('users').doc(req.params.id).collection('lists');
-            let response = [];
-            await query.get().then(querySnapshot => {
-                let docs = querySnapshot.docs;
-                for (let doc of docs) {
-                    const selectedListByUser = doc.data();
-                    response.push(selectedListByUser);
-                }
-            });
-            return res.status(200).send(response);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Read.readListsByUser(req, res, db, errorMessage)
 });
 
 // get All ActivityCard by List
 app.get('/users/:id/lists/:idList/', (req, res) => {
-    (async () => {
-        try {
-            const document = db.collection('users')
-                .doc(req.params.id).collection('lists').doc(req.params.idList);
-            let data = await document.get();
-            let response = data.data();
-            return res.status(200).send(response);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Read.readOneListByUser(req, res, db, errorMessage)
 });
 
 // get ActivityCard by List by User
 app.get('/users/:id/lists/:idList/tasks', (req, res) => {
-    (async () => {
-        try {
-            const query = db.collection('users').doc(req.params.id)
-                .collection('lists').doc(req.params.idList)
-                .collection("tasks");
-            let response = [];
-            await query.get().then(querySnapshot => {
-                let docs = querySnapshot.docs;
-                for (let doc of docs) {
-                    const selectedActivitiesByList = doc.data();
-                    response.push(selectedActivitiesByList);
-                }
-            });
-            return res.status(200).send(response);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Read.readTasksByListByUser(req, res, db, errorMessage)
 });
 
 // get Task by idList by User
 app.get('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
-    (async () => {
-        try {
-            const query = db.collection('users').doc(req.params.id)
-                .collection('lists').doc(req.params.idList)
-                .collection('tasks').doc(req.params.idTask);
-            let data = await query.get();
-            let response = data.data();
-            return res.status(200).send(response);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Read.readOneTaskByListByUser(req, res, db, errorMessage)
 });
 
 // UPDATE USER / CATEGORY / ACTIVITY
 app.put('/:data/:id', (req, res) => {
-    (async () => {
-        try {
-            const document = db.collection(req.params.data).doc(req.params.id);
-            await document.update({
-                email: req.body.email,
-                name: {
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname
-                },
-                nat: req.body.nat,
-                phone: req.body.phone
-            });
-            return res.status(200).send('The '+req.params.data+' was updated with success !');
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Update.updateData(req, res, db, errorMessage)
 });
 
 // DELETE USER / ACTIVITY / CATEGORY
@@ -275,29 +94,7 @@ app.delete('/:data/:id', (req, res) => {
 
 // DELETE LIST
 app.delete('/users/:id/lists/:idList', (req, res) => {
-    (async () => {
-        try {
-            const document = db.collection('users').doc(req.params.id)
-                .collection('lists').doc(req.params.idList);
-            const query = document.collection("tasks");
-            let response = [];
-            await query.get().then(querySnapshot => {
-                let docs = querySnapshot.docs;
-                for (let doc of docs) {
-                    const selectedActivitiesByList = doc.data();
-                    response.push(selectedActivitiesByList);
-                }
-            });
-            if(response.length > 0){
-                console.log(response)
-            }
-            // await document.delete();
-            return res.status(200).send('The List was deleted with success !');
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(errorMessage('', error));
-        }
-    })();
+    Delete.deleteLists(req, res, db, errorMessage)
 });
 
 app.delete('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
