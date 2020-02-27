@@ -44,16 +44,21 @@ module.exports = {
     readListsByUser: (req, res, db, errorMessage) => {
         (async () => {
             try {
-                const query = db.collection('users').doc(req.params.id).collection('lists');
-                let response = [];
-                await query.get().then(querySnapshot => {
-                    let docs = querySnapshot.docs;
-                    for (let doc of docs) {
-                        const selectedListByUser = doc.data();
-                        response.push(selectedListByUser);
+                const query = db.collection('users').doc(req.params.id);
+                        const list = query.collection('lists');
+                        let response = [];
+                        await list.get().then(querySnapshot => {
+                            let docs = querySnapshot.docs;
+                            for (let doc of docs) {
+                                const selectedListByUser = doc.data();
+                                response.push(selectedListByUser);
+                            }
+                        });
+                    if(response.length > 0 ){
+                        return res.status(200).send(response);
+                    }else{
+                        return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
                     }
-                });
-                return res.status(200).send(response);
             } catch (error) {
                 console.log(error);
                 return res.status(500).send(errorMessage('', error));
@@ -68,7 +73,11 @@ module.exports = {
                     .doc(req.params.id).collection('lists').doc(req.params.idList);
                 let data = await document.get();
                 let response = data.data();
-                return res.status(200).send(response);
+                if(response.length > 0 ){
+                    return res.status(200).send(response);
+                }else{
+                    return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
+                }
             } catch (error) {
                 console.log(error);
                 return res.status(500).send(errorMessage('', error));
@@ -90,7 +99,11 @@ module.exports = {
                         response.push(selectedActivitiesByList);
                     }
                 });
-                return res.status(200).send(response);
+                if(response.length > 0 ){
+                    return res.status(200).send(response);
+                }else{
+                    return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
+                }
             } catch (error) {
                 console.log(error);
                 return res.status(500).send(errorMessage('', error));
@@ -106,7 +119,11 @@ module.exports = {
                     .collection('tasks').doc(req.params.idTask);
                 let data = await query.get();
                 let response = data.data();
-                return res.status(200).send(response);
+                if(response.length > 0 ){
+                    return res.status(200).send(response);
+                }else{
+                    return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
+                }
             } catch (error) {
                 console.log(error);
                 return res.status(500).send(errorMessage('', error));
