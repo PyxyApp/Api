@@ -35,8 +35,8 @@ module.exports = {
                     return res.status(200).send(response);
                 }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -55,8 +55,8 @@ module.exports = {
                 });
                 return res.status(200).send(response);
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -70,8 +70,8 @@ module.exports = {
                 let response = data.data();
                 return res.status(200).send(response);
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -92,8 +92,8 @@ module.exports = {
                 });
                 return res.status(200).send(response);
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -108,8 +108,8 @@ module.exports = {
                 let response = data.data();
                 return res.status(200).send(response);
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     }
