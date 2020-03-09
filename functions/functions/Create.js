@@ -6,11 +6,11 @@ module.exports = {
             try {
                 switch(req.params.data){
                     case "users":
-                        await db.collection('users').doc(id)
+                        await db.collection('users').doc(req.body.id)
                             .set({
                                 name: {firstname: req.body.firstname, lastname: req.body.firstname},
                                 email: req.body.email,
-                                login:{id: id, password: crypto.createHash('sha256').update(req.body.password).digest('base64'), username: req.body.username},
+                                id: req.body.id,
                                 nat: req.body.nat,
                                 phone: req.body.phone
                             });
