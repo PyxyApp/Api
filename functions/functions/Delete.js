@@ -8,7 +8,7 @@ module.exports = {
                 return res.status(200).send('The '+req.params.data+' was deleted with success !');
             } catch (error) {
                 console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -37,8 +37,8 @@ module.exports = {
                 await document.delete();
                 return res.status(200).send('The List was deleted with success and the tasks was also deleted !');
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -53,7 +53,7 @@ module.exports = {
                 return res.status(200).send('The Task was deleted with success !');
             } catch (error) {
                 console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     }
