@@ -35,8 +35,8 @@ module.exports = {
                     return res.status(200).send(response);
                 }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -60,8 +60,8 @@ module.exports = {
                         return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
                     }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -79,8 +79,8 @@ module.exports = {
                     return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
                 }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -105,8 +105,8 @@ module.exports = {
                     return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
                 }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     },
@@ -125,8 +125,8 @@ module.exports = {
                     return res.status(404).send(errorMessage('Ressource was not found', 'The id of data is invalid.'));
                 }
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     }
