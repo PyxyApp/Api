@@ -8,7 +8,7 @@ const Auth = require('../middlewares/CheckAuth');
 
 module.exports = {
 
-    crud: (app, db, errorMessage, key, jwt) => {
+    crud: (app, db, errorMessage, key, jwt, admin) => {
 
         const getToken = (req, res) => {
             const str =  req.headers.authorization;
@@ -53,7 +53,7 @@ module.exports = {
 // CREATE USER / ACTIVITY / CATEGORY
         app.post('/:data', (req, res) => {
             Auth.CheckAuth(app, jwt, errorMessage, getToken(req, res), key);
-            Create.createData(req, res, db, uuid, errorMessage, crypto);
+            Create.createData(req, res, db, uuid, errorMessage, admin);
         });
 
 // CREATE LIST

@@ -27,9 +27,10 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://pyxy-f84e8.firebaseio.com"
 });
+
 const db = admin.firestore();
 
-routes.crud(app, db, errorMessage, key, jwt);
+routes.crud(app, db, errorMessage, key, jwt, admin);
 
 const api = app;
 exports.api = functions.https.onRequest(api);

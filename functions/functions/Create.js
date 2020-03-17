@@ -1,19 +1,24 @@
 module.exports = {
     // CREATE
-    createData: (req, res, db, uuid, errorMessage, crypto) => {
+    createData: (req, res, db, uuid, errorMessage, admin) => {
         const id = uuid.v1();
         (async () => {
             try {
                 switch(req.params.data){
                     case "users":
-                        await db.collection('users').doc(req.body.id)
-                            .set({
-                                name: {firstname: req.body.firstname, lastname: req.body.firstname},
-                                email: req.body.email,
-                                id: req.body.id,
-                                nat: req.body.nat,
-                                phone: req.body.phone
-                            });
+                        admin.auth().createUserWithEmailAndPassword(req.body.email, req.body.password)
+                            .then(function() {
+                                db.collection('users').doc(id)
+                                .set({
+                                    name: {firstname: req.body.firstname, lastname: req.body.firstname},
+                                    email: req.body.email,
+                                    nat: req.body.nat,
+                                    phone: req.body.phone
+                                });
+                            })
+                            .catch(function(error) {
+                                return res.status(409).send(errorMessage(error.code, error.message))
+                        });
                         break;
                     case "activities":
                         await db.collection('activities').doc(id)
