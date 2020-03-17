@@ -22,7 +22,7 @@ module.exports = {
         };
 
         app.get('/^(\\d+)$', function(req, res) {
-            res.send('API version 1.2.0');
+            res.send('API version 1.3.0');
         });
 
         app.post('/token', function(req, res) {
