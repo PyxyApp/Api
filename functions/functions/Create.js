@@ -33,8 +33,8 @@ module.exports = {
                             });
 
                         break;
-                    case "activity":
-                        await db.collection('activity').doc(id)
+                    case "activities":
+                        await db.collection('activities').doc(id)
                             .set({
                                 id: id,
                                 content: req.body.content,
@@ -71,7 +71,7 @@ module.exports = {
                 return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
             } catch (error) {
                 console.log(error.message);
-                return res.status(404).send(errorMessage('Resource was not found.', error.message));
+                return res.status(400).send(errorMessage('invalid data', error.message));
             }
         })();
     },
@@ -97,23 +97,6 @@ module.exports = {
             } catch (error) {
                 console.log(error.message);
                 return res.status(500).send(errorMessage('', error.message));
-            }
-        })();
-    },
-
-    createTask: (req, res, db, uuid, errorMessage) => {
-        const id = uuid.v1();
-        (async () => {
-            try {
-                req.body.id = id;
-                await db.collection('users').doc(req.params.id)
-                    .collection('lists').doc(req.params.idList)
-                    .collection('tasks').doc(id)
-                    .set(req.body);
-                return res.status(200).send('The "'+req.body.title+'" task has been successfully created with id '+id+'!');
-            } catch (error) {
-                console.log(error.message);
-                return res.status(400).send(errorMessage('invalid data', error.message));
             }
         })();
     }
