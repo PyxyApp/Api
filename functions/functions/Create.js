@@ -65,6 +65,21 @@ module.exports = {
                                 title: req.body.title
                             });
                         break;
+                    case "lists":
+                        await db.collection('lists').doc(id)
+                            .set({
+                                id: id,
+                                title: req.body.title,
+                                private: req.body.private,
+                                isActivated: true,
+                                date: {
+                                    dateCreated: Date.now(),
+                                    dateLimit: req.body.dateLimit,
+                                    dateDisabled: 'activated'
+                                },
+                                description: req.body.description
+                            });
+                        break;
                     default:
                         await db.collection(req.params.data).doc('/' + id + '/')
                             .create({users: req.body});
@@ -73,31 +88,6 @@ module.exports = {
             } catch (error) {
                 console.log(error.message);
                 return res.status(400).send(errorMessage('invalid data', error.message));
-            }
-        })();
-    },
-
-    createList: (req, res, db, uuid, errorMessage) => {
-        const id = uuid.v1();
-        (async () => {
-            try {
-                await db.collection('users').doc(req.params.id).collection('lists').doc(id)
-                    .set({
-                        id: id,
-                        title: req.body.title,
-                        private: req.body.private,
-                        isActivated: true,
-                        date: {
-                            dateCreated: Date.now(),
-                            dateLimit: req.body.dateLimit,
-                            dateDisabled: 'activated'
-                        },
-                        description: req.body.description
-                    });
-                return res.status(200).send('The "'+req.body.title+'" list has been successfully created with id '+id+'!');
-            } catch (error) {
-                console.log(error.message);
-                return res.status(500).send(errorMessage('', error.message));
             }
         })();
     }
