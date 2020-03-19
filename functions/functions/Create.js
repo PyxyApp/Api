@@ -81,8 +81,7 @@ module.exports = {
                             });
                         break;
                     default:
-                        await db.collection(req.params.data).doc('/' + id + '/')
-                            .create({users: req.body});
+                        return res.status(404).send(errorMessage('invalid data', 'The data was not found'));
                 }
                 return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
             } catch (error) {
