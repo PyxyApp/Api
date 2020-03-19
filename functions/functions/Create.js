@@ -7,20 +7,21 @@ module.exports = {
                 switch(req.params.data){
                     case "users":
                         admin.auth().createUser({
-                            email: 'user@example.com',
+                            email: req.body.email,
                             emailVerified: false,
-                            phoneNumber: '+11234567890',
-                            password: 'secretPassword',
-                            displayName: 'John Doe',
-                            photoURL: 'http://www.example.com/12345678/photo.png',
+                            phoneNumber: req.body.phone,
+                            password: req.body.password,
+                            displayName: req.body.displayName,
+                            photoURL: req.body.photoURL,
                             disabled: false,
                             uid: id
                         })
                             .then(function(userRecord) {
                                 db.collection('users').doc(id)
                                     .set({
-                                        name: {firstname: req.body.firstname, lastname: req.body.firstname},
-                                        email: req.body.email,
+                                        acp: {
+                                           admin: false
+                                        },
                                         nat: req.body.nat,
                                         phone: req.body.phone
                                     });
@@ -29,7 +30,7 @@ module.exports = {
                             })
                             .catch(function(error) {
                                 console.log('Error creating new user:', error.message);
-                                return res.status(409).send(errorMessage('Resource was not found.', error.message));
+                                return res.status(409).send(errorMessage(error.code, error.message));
                             });
 
                         break;
