@@ -1,10 +1,10 @@
-const crypto = require('crypto');
 const uuid = require('uuid');
 const Create = require("../functions/Create");
 const Read = require("../functions/Read");
 const Update = require("../functions/Update");
 const Delete = require("../functions/Delete");
 const Auth = require('../middlewares/CheckAuth');
+const pkg = require('../../package');
 
 module.exports = {
 
@@ -21,8 +21,10 @@ module.exports = {
             }
         };
 
-        app.get('/^(\\d+)$', function(req, res) {
-            res.send('API version 1.3.0');
+        app.get('/', function(req, res) {
+            res.json({
+             "API_Version": pkg.version
+            });
         });
 
         app.post('/token', function(req, res) {
@@ -104,7 +106,7 @@ module.exports = {
             Read.readOneTaskByListByUser(req, res, db, errorMessage)
         });
 
-// UPDATE USER / CATEGORY / ACTIVITY
+// UPDATE USER / CATEGORY / ACTIVITY / TASKS
         app.put('/:data/:id', (req, res) => {
             Auth.CheckAuth(res, jwt, errorMessage, getToken(req, res), key);
             Update.updateData(req, res, db, errorMessage)
