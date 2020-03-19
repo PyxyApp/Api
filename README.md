@@ -1,3 +1,9 @@
+![GitHub package.json version](https://img.shields.io/github/package-json/v/PyxyApp/Api)
+![Discord](https://img.shields.io/discord/681488975071936559)
+![GitHub repo size](https://img.shields.io/github/repo-size/PyxyApp/APi)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/PyxyApp/Api)
+
+
 # api 
 Api return data of Pyx'App to use it in website and mobile app.
 
