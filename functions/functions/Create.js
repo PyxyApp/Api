@@ -33,8 +33,8 @@ module.exports = {
                             });
 
                         break;
-                    case "activities":
-                        await db.collection('activities').doc(id)
+                    case "activity":
+                        await db.collection('activity').doc(id)
                             .set({
                                 id: id,
                                 content: req.body.content,
@@ -45,6 +45,16 @@ module.exports = {
                                     dateCreated: Date.now(),
                                     dateDisabled: 'activated'
                                 }
+                            });
+                        break;
+                    case "tasks":
+                        await db.collection('tasks').doc(id)
+                            .set({
+                                category: req.body.category,
+                                description: req.body.description,
+                                name: req.body.name,
+                                is_done: false,
+                                is_private: req.body.private
                             });
                         break;
                     case "categories":
