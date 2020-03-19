@@ -6,19 +6,32 @@ module.exports = {
             try {
                 switch(req.params.data){
                     case "users":
-                        admin.auth().createUserWithEmailAndPassword(req.body.email, req.body.password)
-                            .then(function() {
+                        admin.auth().createUser({
+                            email: 'user@example.com',
+                            emailVerified: false,
+                            phoneNumber: '+11234567890',
+                            password: 'secretPassword',
+                            displayName: 'John Doe',
+                            photoURL: 'http://www.example.com/12345678/photo.png',
+                            disabled: false,
+                            uid: id
+                        })
+                            .then(function(userRecord) {
                                 db.collection('users').doc(id)
-                                .set({
-                                    name: {firstname: req.body.firstname, lastname: req.body.firstname},
-                                    email: req.body.email,
-                                    nat: req.body.nat,
-                                    phone: req.body.phone
-                                });
+                                    .set({
+                                        name: {firstname: req.body.firstname, lastname: req.body.firstname},
+                                        email: req.body.email,
+                                        nat: req.body.nat,
+                                        phone: req.body.phone
+                                    });
+                                // See the UserRecord reference doc for the contents of userRecord.
+                                console.log('Successfully created new user:', userRecord.uid);
                             })
                             .catch(function(error) {
-                                return res.status(409).send(errorMessage(error.code, error.message))
-                        });
+                                console.log('Error creating new user:', error.message);
+                                return res.status(409).send(errorMessage('Resource was not found.', error.message));
+                            });
+
                         break;
                     case "activities":
                         await db.collection('activities').doc(id)
