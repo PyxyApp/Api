@@ -1,3 +1,9 @@
+import CFU from './Create/createUser';
+import CFA from './Create/createActivity';
+import CFT from './Create/createTask';
+import CFC from './Create/createCategory';
+import CFL from './Create/createList';
+
 module.exports = {
     // CREATE
     createData: (req, res, db, uuid, errorMessage, admin) => {
@@ -6,79 +12,19 @@ module.exports = {
             try {
                 switch(req.params.data){
                     case "users":
-                        admin.auth().createUser({
-                            email: req.body.email,
-                            emailVerified: false,
-                            phoneNumber: req.body.phone,
-                            password: req.body.password,
-                            displayName: req.body.displayName,
-                            photoURL: req.body.photoURL,
-                            disabled: false,
-                            uid: id
-                        })
-                            .then(function(userRecord) {
-                                db.collection('users').doc(id)
-                                    .set({
-                                        acp: {
-                                           admin: false
-                                        },
-                                        nat: req.body.nat,
-                                        phone: req.body.phone
-                                    });
-                                // See the UserRecord reference doc for the contents of userRecord.
-                                console.log('Successfully created new user:', userRecord.uid);
-                            })
-                            .catch(function(error) {
-                                console.log('Error creating new user:', error.message);
-                                return res.status(409).send(errorMessage(error.code, error.message));
-                            });
-
+                        CFU.createUser(req, res, db, uuid, errorMessage, admin);
                         break;
                     case "activities":
-                        await db.collection('activities').doc(id)
-                            .set({
-                                id: id,
-                                content: req.body.content,
-                                list: req.body.list,
-                                userId: req.body.userId,
-                                isActivated: true,
-                                date: {
-                                    dateCreated: Date.now(),
-                                    dateDisabled: 'activated'
-                                }
-                            });
+                        await CFA.createActivity(req, res, db, id);
                         break;
                     case "tasks":
-                        await db.collection('tasks').doc(id)
-                            .set({
-                                category: req.body.category,
-                                description: req.body.description,
-                                name: req.body.name,
-                                is_done: false,
-                                is_private: req.body.private
-                            });
+                        await CFT.createTask(req, res, db, id);
                         break;
                     case "categories":
-                        await db.collection('categories').doc(id)
-                            .set({
-                                id: id,
-                                title: req.body.title
-                            });
+                        await CFC.createCategory(req, res, db, id);
                         break;
                     case "lists":
-                        await db.collection('lists').doc(id)
-                            .set({
-                                id: id,
-                                title: req.body.title,
-                                private: req.body.private,
-                                isActivated: true,
-                                date: {
-                                    dateCreated: Date.now(),
-                                    dateLimit: req.body.dateLimit,
-                                    dateDisabled: 'activated'
-                                },
-                                description: req.body.description
-                            });
+                        await CFL.createList(req, res, db, id);
                         break;
                     default:
                         return res.status(404).send(errorMessage('invalid data', 'The data was not found'));
