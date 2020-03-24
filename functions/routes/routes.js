@@ -1,84 +1,42 @@
-const crypto = require('crypto');
 const uuid = require('uuid');
+const Token = require ("../functions/Token");
+const appFunc = require('../functions/appFunctions');
 const Create = require("../functions/Create");
 const Read = require("../functions/Read");
 const Update = require("../functions/Update");
 const Delete = require("../functions/Delete");
+const pkg = require('../../package');
 
 module.exports = {
 
-    crud: (app, db, errorMessage) => {
+    crud: (app, db, errorMessage, key, jwt, admin) => {
 
-        app.get('/', function(req, res) {
-            res.send('API version 1.2.0');
-        });
+        const getToken = (req, res) => {
+            return req.headers.authorization !== undefined ? req.headers.authorization.split(" ")[1] : res.status(403).send(errorMessage('invalid token', 'Your token is invalid or undefined'));
+        };
 
-        app.get('/^(\\d+)$', function(req, res) {
-            res.send('API version 1.2.0');
-        });
+        app
+            .get("/", (req, res) => {
+                res.json({ "API_Version": pkg.version });
+            })
+            .get('/:data', (req, res) => {
+                appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Read, 'readData')
+            })
+            .get('/:data/:id', (req, res) => {
+                appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Read, 'readOneData')
+            })
+            .post('/token', (req, res) => {
+                Token.postToken(req, res, jwt, errorMessage)
+            })
+            .post('/:data', (req, res) => {
+                appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Create, 'createData');
+            })
+            .put('/:data/:id', (req, res) => {
+                appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Update, 'updateData');
+            })
+            .delete('/:data/:id', (req, res) => {
+                appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Delete, 'updateData');
+            })
 
-// CREATE USER / ACTIVITY / CATEGORY
-        app.post('/:data', (req, res) => {
-            Create.createData(req, res, db, uuid, errorMessage, crypto);
-        });
-
-// CREATE LIST
-        app.post('/users/:id/lists/', (req, res) => {
-            Create.createList(req, res, db, uuid, errorMessage)
-        });
-
-// CREATE TASK
-        app.post('/users/:id/lists/:idList/tasks', (req, res) => {
-            Create.createTask(req, res, db, uuid, errorMessage)
-        });
-
-// READ ALL DATA OF USER / CATEGORY / ACTIVITY
-        app.get('/:data', (req, res) => {
-            Read.readData(req, res, db, errorMessage)
-        });
-
-// READ ONE USER / CATEGORY / ACTIVITY
-        app.get('/:data/:id', (req, res) => {
-            Read.readOneData(req, res, db, errorMessage)
-        });
-
-// READ ALL LIST FOR ONE USER
-        app.get('/users/:id/lists', (req, res) => {
-            Read.readListsByUser(req, res, db, errorMessage)
-        });
-
-// get All ActivityCard by List
-        app.get('/users/:id/lists/:idList/', (req, res) => {
-            Read.readOneListByUser(req, res, db, errorMessage)
-        });
-
-// get ActivityCard by List by User
-        app.get('/users/:id/lists/:idList/tasks', (req, res) => {
-            Read.readTasksByListByUser(req, res, db, errorMessage)
-        });
-
-// get Task by idList by User
-        app.get('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
-            Read.readOneTaskByListByUser(req, res, db, errorMessage)
-        });
-
-// UPDATE USER / CATEGORY / ACTIVITY
-        app.put('/:data/:id', (req, res) => {
-            Update.updateData(req, res, db, errorMessage)
-        });
-
-// DELETE USER / ACTIVITY / CATEGORY
-        app.delete('/:data/:id', (req, res) => {
-            Delete.deleteData(req, res, db, errorMessage)
-        });
-
-// DELETE LIST
-        app.delete('/users/:id/lists/:idList', (req, res) => {
-            Delete.deleteLists(req, res, db, errorMessage, Delete)
-        });
-
-        app.delete('/users/:id/lists/:idList/tasks/:idTask', (req, res) => {
-            Delete.deleteTask(req, res, db, errorMessage);
-        });
     }
 };
