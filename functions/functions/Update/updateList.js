@@ -2,12 +2,11 @@ module.exports = {
     updateList: async (req, res, db) => {
         const document = db.collection(req.params.data).doc(req.params.id);
         await document.update({
-            name: {
-                firstname: req.body.firstname,
-                lastname: req.body.lastname
-            },
-            nat: req.body.nat,
-            phone: req.body.phone
+            title: req.body.title,
+            user: req.body.user,
+            list: req.body.list,
+            is_active: req.body.is_active,
+            is_private: req.body.is_private
         });
     }
 };
