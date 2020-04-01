@@ -1,8 +1,8 @@
-import UFU from './Update/updateUser'
-import UFC from './Update/updateCateogry'
-import UFA from './Update/updateActivity'
-import UFL from './Update/updateList'
-import UFT from './Update/updateTask'
+const UFU = require('./Update/updateUser');
+const UFC = require('./Update/updateCateogry');
+const UFA = require('./Update/updateActivity');
+const UFL = require('./Update/updateList');
+const UFT = require('./Update/updateTask');
 
 module.exports = {
     // UPDATE

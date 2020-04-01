@@ -1,8 +1,8 @@
-import CFU from './Create/createUser';
-import CFA from './Create/createActivity';
-import CFT from './Create/createTask';
-import CFC from './Create/createCategory';
-import CFL from './Create/createList';
+const CFU = require('./Create/createUser');
+const CFA = require('./Create/createActivity');
+const CFT = require('./Create/createTask');
+const CFC = require('./Create/createCategory');
+const CFL = require('./Create/createList');
 
 module.exports = {
     // CREATE

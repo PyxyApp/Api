@@ -9,16 +9,27 @@ module.exports = {
             displayName: req.body.displayName,
             photoURL: req.body.photoURL,
             disabled: false,
-            uid: id
         })
             .then(function(userRecord) {
-                db.collection('users').doc(id)
+                console.log(userRecord);
+                db.collection('users').doc(userRecord.uid)
                     .set({
+                        uid: userRecord.uid,
                         acp: {
                             admin: false
                         },
+                        date: {
+                            date_created: new Date(userRecord.metadata.creationTime),
+                            last_login: new Date(userRecord.metadata.creationTime)
+                        },
                         nat: req.body.nat,
-                        phone: req.body.phone
+                        email: req.body.email,
+                        gender: req.body.gender,
+                        name: {
+                            firstname: req.body.firstname,
+                            lastname: req.body.lastname,
+                            username: req.body.username,
+                        }
                     });
                 // See the UserRecord reference doc for the contents of userRecord.
                 console.log('Successfully created new user:', userRecord.uid);
