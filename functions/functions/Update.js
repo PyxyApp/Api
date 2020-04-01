@@ -6,12 +6,12 @@ const UFT = require('./Update/updateTask');
 
 module.exports = {
     // UPDATE
-    updateData: (req, res, db, errorMessage) => {
+    updateData: (req, res, db, uuid, errorMessage, admin) => {
         (async () => {
             try {
                 switch(req.params.data){
-                    case 'user':
-                        await UFU.updateUser(req, res, db);
+                    case 'users':
+                        await UFU.updateUser(req, res, db, admin);
                         break;
                     case 'activities':
                         await UFA.updateActivity(req, res, db);
@@ -30,8 +30,8 @@ module.exports = {
                 }
                 return res.status(200).send('The '+req.params.data+' was updated with success !');
             } catch (error) {
-                console.log(error);
-                return res.status(500).send(errorMessage('', error));
+                console.log(error.message);
+                return res.status(500).send(errorMessage( error.code, error.message));
             }
         })();
     },
