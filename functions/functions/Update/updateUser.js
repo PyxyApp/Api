@@ -7,7 +7,7 @@ module.exports = {
             password: req.body.password,
             displayName: req.body.displayName,
             photoURL: req.body.photoURL,
-            disabled: true
+            disabled: req.body.disabled
         })
             .then((userRecord) => {
                 console.log(userRecord);
