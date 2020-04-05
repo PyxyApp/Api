@@ -11,7 +11,6 @@ module.exports = {
             disabled: false,
         })
             .then(function(userRecord) {
-                console.log(userRecord);
                 db.collection('users').doc(userRecord.uid)
                     .set({
                         uid: userRecord.uid,
@@ -30,9 +29,11 @@ module.exports = {
                             lastname: req.body.lastname,
                             username: req.body.username,
                         }
-                    });
-                // See the UserRecord reference doc for the contents of userRecord.
-                console.log('Successfully created new user:', userRecord.uid);
+                    }).then(result =>{
+                    return res.status(202).send(result+ ' Successfully created new user:', userRecord.uid + " " + uuid);
+                }).catch(e => {
+                    return res.status(409).send(errorMessage(e.code, e.message));
+                });
             })
             .catch(function(error) {
                 console.log('Error creating new user:', error.message);

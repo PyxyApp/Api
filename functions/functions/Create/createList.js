@@ -1,18 +1,22 @@
 module.exports = {
     // CREATE USER
     createList: async (req, res, db, id) => {
+        let description;
+        if(req.body.description){
+            description = req.body.description
+        }else{
+            description = ""
+        }
         await db.collection('lists').doc(id)
             .set({
                 id: id,
                 title: req.body.title,
-                private: req.body.private,
-                isActivated: true,
+                is_private: req.body.is_private,
+                is_active: req.body.is_active,
                 date: {
-                    dateCreated: Date.now(),
-                    dateLimit: req.body.dateLimit,
-                    dateDisabled: 'activated'
+                    dateCreated: Date.now()
                 },
-                description: req.body.description
+                description: description
             });
     }
 };
