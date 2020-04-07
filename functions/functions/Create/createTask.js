@@ -14,8 +14,9 @@ module.exports = {
                 description: description,
                 name: req.body.name,
                 date: {
-                    date_created: new Date(Date.now())
+                    date_created: new Date(Date.now()),
                 },
+                date_done: null,
                 is_done: false,
                 is_private: req.body.is_private
             });
