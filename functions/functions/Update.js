@@ -17,7 +17,7 @@ module.exports = {
                         await UFA.updateActivity(req, res, db);
                         break;
                     case 'categories':
-                        await UFC.updateCateogry(req, res, db);
+                        await UFC.updateCategory(req, res, db);
                         break;
                     case 'lists':
                         await UFL.updateList(req, res, db);
