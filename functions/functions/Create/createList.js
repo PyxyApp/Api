@@ -14,8 +14,10 @@ module.exports = {
                 is_private: req.body.is_private,
                 is_active: req.body.is_active,
                 date: {
-                    dateCreated: Date.now()
+                    date_created: new Date(Date.now())
                 },
+                user: req.body.user,
+                category: req.body.category,
                 description: description
             });
     }
