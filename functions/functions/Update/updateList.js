@@ -4,7 +4,8 @@ module.exports = {
         await document.update({
             title: req.body.title,
             user: req.body.user,
-            list: req.body.list,
+            category: req.body.category,
+            description: req.body.description,
             is_active: req.body.is_active,
             is_private: req.body.is_private
         });

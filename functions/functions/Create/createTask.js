@@ -1,13 +1,24 @@
 module.exports = {
     // CREATE USER
     createTask: async (req, res, db, id) => {
+        let description;
+        if(req.body.description){
+            description = req.body.description
+        }else{
+            description = ""
+        }
         await db.collection('tasks').doc(id)
             .set({
-                category: req.body.category,
-                description: req.body.description,
+                id: id,
+                list: req.body.list,
+                description: description,
                 name: req.body.name,
+                date: {
+                    date_created: new Date(Date.now()),
+                },
+                date_done: null,
                 is_done: false,
-                is_private: req.body.private
+                is_private: req.body.is_private
             });
     }
 };
