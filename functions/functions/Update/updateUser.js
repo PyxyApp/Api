@@ -5,13 +5,17 @@ module.exports = {
             emailVerified: req.body.email_verified,
             phoneNumber: req.body.phone,
             password: req.body.password,
-            displayName: req.body.firstname + req.body.lastname,
+            displayName: req.body.firstname + " " + req.body.lastname,
             photoURL: req.body.photoURL,
             disabled: req.body.is_active
         })
-            .then((userRecord) => {
+            .then(userRecord => {
                 const document = db.collection(req.params.data).doc(req.params.id);
                     document.update({
+                        date: {
+                            date_created: new Date(userRecord.metadata.creationTime),
+                            last_login: new Date(userRecord.metadata.lastSignInTime),
+                        },
                         email: req.body.email,
                         name: {
                             firstname: req.body.firstname,
@@ -20,7 +24,7 @@ module.exports = {
                         },
                         admin: req.body.admin,
                         nat: req.body.nat,
-                        phone: req.body.phone,
+                        phone: userRecord.phoneNumber,
                         is_active: req.body.is_active
                 });
             })
