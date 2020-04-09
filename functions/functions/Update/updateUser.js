@@ -7,7 +7,7 @@ module.exports = {
             password: req.body.password,
             displayName: req.body.firstname + " " + req.body.lastname,
             photoURL: req.body.photoURL,
-            disabled: req.body.is_active
+            disabled: req.body.is_deactivate
         })
             .then(userRecord => {
                 const document = db.collection(req.params.data).doc(req.params.id);
@@ -25,7 +25,7 @@ module.exports = {
                         admin: req.body.admin,
                         nat: req.body.nat,
                         phone: userRecord.phoneNumber,
-                        is_active: req.body.is_active
+                        is_deactivate: req.body.is_deactivate
                 });
             })
             .catch(e => {
