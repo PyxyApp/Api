@@ -31,8 +31,7 @@ module.exports = {
                 }
                 return res.status(200).send('The '+req.params.data+' has been successfully created with id '+id+'!');
             } catch (error) {
-                console.log(error.message);
-                return res.status(400).send(errorMessage('invalid data', error.message));
+                return res.status(400).send(errorMessage(error.code, error.message));
             }
         })();
     }

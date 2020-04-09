@@ -35,8 +35,7 @@ module.exports = {
                     return res.status(200).send(response);
                 }
             } catch (error) {
-                console.log(error.message);
-                return res.status(500).send(errorMessage('', error.message));
+                return res.status(500).send(errorMessage(error.code, error.message));
             }
         })();
     }

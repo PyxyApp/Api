@@ -18,9 +18,7 @@ module.exports = {
                             lastname: req.body.lastname,
                             username: req.body.username
                         },
-                        acp: {
-                            admin: req.body.admin
-                        },
+                        admin: req.body.admin,
                         nat: req.body.nat,
                         phone: req.body.phone,
                         is_active: req.body.is_active
