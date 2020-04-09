@@ -26,7 +26,7 @@ module.exports = {
                 appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Read, 'readOneData')
             })
             .post('/token', (req, res) => {
-                Token.postToken(req, res, jwt, errorMessage)
+                Token.postToken(req, res, jwt, errorMessage, key)
             })
             .post('/:data', (req, res) => {
                 appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Create, 'createData');
