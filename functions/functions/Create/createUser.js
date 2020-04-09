@@ -14,9 +14,7 @@ module.exports = {
                 db.collection('users').doc(userRecord.uid)
                     .set({
                         uid: userRecord.uid,
-                        acp: {
-                            admin: false
-                        },
+                        admin: false,
                         date: {
                             date_created: new Date(userRecord.metadata.creationTime),
                             last_login: new Date(userRecord.metadata.creationTime)

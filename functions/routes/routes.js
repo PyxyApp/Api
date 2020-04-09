@@ -33,7 +33,6 @@ module.exports = {
             })
             .put('/:data/:id', (req, res) => {
                 appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Update, 'updateData');
-                console.log(req.body)
             })
             .delete('/:data/:id', (req, res) => {
                 appFunc.Func(app, jwt, errorMessage, getToken, key, db, uuid, admin, req, res, Delete, 'deleteData');

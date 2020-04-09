@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy-dev": "firebase deploy",
+    "deploy": "cd functions && npm run serve",
     "start": "nodemon server.js --exec babel-node -e js"
   },
   "repository": {
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "firebase-tools": "^8.0.2"
   }
 }
