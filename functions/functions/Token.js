@@ -1,16 +1,16 @@
 module.exports = {
 
-    postToken: (req, res, jwt, errorMessage) => {
+    postToken: (req, res, jwt, errorMessage, key) => {
         (async () => {
             try {
                 const payload = {
-                    userName: {
-                        "firstname": req.body.firstname,
-                        "lastname": req.body.lastname,
-                        "username": req.body.username
-                    },
+                    "iss": "Pyxy",
+                    "aud": "Pyxy Office / API",
+                    email: req.body.email,
+                    AdminControlPanel: true
                 };
-                jwt.sign(payload, req.body.key, function(err, token) {
+                jwt.verify(req.headers.authorization, key);
+                jwt.sign(payload, key, function(err, token) {
                     try{
                         return res.status(200).send('Your token: \n' + token);
                     } catch (err){
