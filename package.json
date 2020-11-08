@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "firebase deploy",
-    "start": "nodemon server.js --exec babel-node -e js"
+    "start": "nodemon server.js --exec babel-node -e js",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
@@ -22,18 +23,19 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "firebase": "^7.11.0",
-    "firebase-admin": "^8.10.0",
+    "firebase": "^8.0.1",
+    "firebase-admin": "^9.3.0",
     "firebase-functions": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.2",
     "request": "^2.88.2",
+    "standard-version": "^9.0.0",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "firebase-tools": "^8.0.2",
-    "surge": "^0.21.3"
+    "surge": "^0.21.6"
   }
 }
