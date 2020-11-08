@@ -32,5 +32,4 @@ const db = admin.firestore();
 
 routes.crud(app, db, errorMessage, key, jwt, admin);
 
-const api = app;
-exports.api = functions.https.onRequest(api);
+exports.api = functions.region('europe-west1').https.onRequest(api);
